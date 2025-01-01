@@ -90,7 +90,7 @@ class User
         $stmt = $conn->prepare($query);
         $stmt->bindParam(':id', $userID);
         $stmt->execute();
-        $user = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user) {
             switch ($role) {
