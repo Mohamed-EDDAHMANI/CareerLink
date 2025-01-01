@@ -17,32 +17,4 @@ $conn = $db->connect();
 $auth = new Auth( $conn);
 $auth->login($email, $password);
 
-
-// if ($isLoggedIn) {
-//     $_SESSION['user'] = [
-//         'nom' => $isLoggedIn['nom'],
-//         'email' => $isLoggedIn['email'],
-//         'role' => $isLoggedIn['role']
-//     ];
-//     $role = $isLoggedIn["role"];
-//     // Fetch the user details to determine the role
-//     switch ($user['role']) {
-//         case 'Administrateur':
-//             header("Location: admin_dashboard.php");
-//             break;
-//         case 'Candidat':
-//             header("Location: user_dashboard.php");
-//             break;
-//         case 'Recruteur':
-//             header("Location: user_dashboard.php");
-//             break;
-//         default:
-//             header("Location: login.php?error=Unknown role");
-//     }
-//     exit;
-// } else {
-//     header("Location: login.php?error=Invalid credentials");
-//     exit;
-// }
-// // }
-// ?>
+?>

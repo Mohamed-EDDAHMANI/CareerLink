@@ -77,7 +77,7 @@ class User
     {
         $query = "INSERT INTO users (name , email , password , role)
         VALUES (:name, :email, :password, :role)";
-        
+
         $stmt = $conn->prepare($query);
         $stmt->bindParam(':name', $name);
         $stmt->bindParam(':email', $email);
@@ -103,10 +103,11 @@ class User
                     break;
 
                 case 'Candidat':
-                    if (isset($data[0]) && isset($data[1])) {
-                        $skills = $data[0];
-                        $diplome = $data[1];
-                        $query = "INSERT INTO admins (skills, deplome, user_id)
+                    $dataArray = array_slice($data, 1);  // Remove the first element (PDO connection)
+                    if (isset($dataArray[0]) && isset($dataArray[1])) {
+                        $skills = $dataArray[0];
+                        $diplome = $dataArray[1];
+                        $query = "INSERT INTO candidats (skills, deplome, user_id)
                               VALUES (:skills, :deplome, :user_id)";
                         $stmt = $conn->prepare($query);
                         $stmt->bindParam(':skills', $skills);
@@ -117,10 +118,11 @@ class User
                     break;
 
                 case 'Recruteur':
-                    if (isset($data[0])) {
-                        $companyName = $data[0];
-                        $query = "INSERT INTO admins (skills, deplome, user_id)
-                              VALUES (:skills, :deplome, :user_id)";
+                    $dataArray = array_slice($data, 1);  // Remove the first element (PDO connection)
+                    if (isset($dataArray[0]) ) {
+                        $companyName = $dataArray[0];
+                        $query = "INSERT INTO recruteurs (company_name, user_id)
+                              VALUES (:company_name, :user_id)";
                         $stmt = $conn->prepare($query);
                         $stmt->bindParam(':company_name', $companyName);
                         $stmt->bindParam(':user_id', $userID);
