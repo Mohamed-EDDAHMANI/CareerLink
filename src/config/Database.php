@@ -12,7 +12,7 @@ class Database
             try {
                 $this->conn = new PDO("mysql:host=" . $this->dbHost . ";dbname=" . $this->dbName, $this->dbUsername, $this->dbPassword);
                 $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                echo 'seccess';
+                // echo 'seccess';
                 return $this->conn;
             } catch (PDOException $e) {
                 die("Failed to connect with MySQL: " . $e->getMessage());

@@ -24,10 +24,13 @@ if ($isLoggedIn) {
     $role = $isLoggedIn["role"];
     // Fetch the user details to determine the role
     switch ($user['role']) {
-        case 'admin':
+        case 'Administrateur':
             header("Location: admin_dashboard.php");
             break;
-        case 'user':
+        case 'Candidat':
+            header("Location: user_dashboard.php");
+            break;
+        case 'Recruteur':
             header("Location: user_dashboard.php");
             break;
         default:
