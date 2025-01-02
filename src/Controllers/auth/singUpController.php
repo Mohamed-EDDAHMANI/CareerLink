@@ -1,50 +1,46 @@
 <?php
 session_start();
-require_once '../../Classes/User.php';
-require_once '../../Config/Database.php';
-require_once 'Auth.php';
+
+require '../../../vendor/autoload.php';
+
+use App\Controllers\auth\Auth;
+use App\Config\Database;
 
 
-// if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-// Get the email and password from the form
-// $email = $_POST['email'];
-// $password = $_POST['password'];
-// $role = $_POST['role'];
-$name = 'ossama';
-$email = 'ossama11@gmail.com';
-$password = 'ossama';
-$role = 'Candidat';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Get the email and password from the form
+    $name = $_POST['name'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+    $role = $_POST['role'];
 
-// Call the Auth class
-$db = new Database();
-$conn = $db->connect();
-$auth = new Auth( $conn);
+    // Call the Auth class
+    $db = new Database();
+    $conn = $db->connect();
+    $auth = new Auth($conn);
 
-switch ($role) {
-    case 'Administrateur':
-        $auth->signup($name, $email, $password, $role);
-        break;
+    switch ($role) {
+        case 'Administrateur':
+            $auth->signup($name, $email, $password, $role);
+            break;
 
-    case 'Candidat':
-        // $skills = $_POST['skills'];
-        // $deplome = $_POST['deplome'];
-        $skills = 'devWeb info it';
-        $deplome = 'master';
-        $auth->signup($name, $email, $password, $role, $conn, $skills, $deplome);
-        break;
+        case 'Candidat':
+            $skills = $_POST['skills'];
+            $deplome = $_POST['deplome'];
+            $auth->signup($name, $email, $password, $role, $conn, $skills, $deplome);
+            break;
 
-    case 'Recruteur':
-        // $companyName = $_POST['companyName'];
-        $companyName = 'simplon';
-        $auth->signup($name, $email, $password, $role, $conn, $companyName);
+        case 'Recruteur':
+            $companyName = $_POST['companyName'];
+            $auth->signup($name, $email, $password, $role, $conn, $companyName);
 
-        break;
+            break;
 
-    default:
-        # code...
-        break;
+        default:
+            # code...
+            break;
+    }
+
+
 }
-
-
-// }
 ?>

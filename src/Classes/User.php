@@ -1,5 +1,6 @@
 <?php
 
+namespace App\Classes;
 
 class User
 {
@@ -64,7 +65,7 @@ class User
         $stmt->bindParam(':email', $email);
         $stmt->bindParam(':password', $password);
         $stmt->execute();
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        $user = $stmt->fetch(\PDO::FETCH_ASSOC);
 
         if ($user) {
             return $user;
@@ -75,22 +76,30 @@ class User
 
     public static function singUp($name, $email, $password, $role, $conn, ...$data)
     {
-        $query = "INSERT INTO users (name , email , password , role)
+        try {
+            $query = "INSERT INTO users (name , email , password , role)
         VALUES (:name, :email, :password, :role)";
 
-        $stmt = $conn->prepare($query);
-        $stmt->bindParam(':name', $name);
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':password', $password);
-        $stmt->bindParam(':role', $role);
-        $stmt->execute();
-        $userID = $conn->lastInsertId();
-        $query = "SELECT * FROM users
-        where id = :id";
-        $stmt = $conn->prepare($query);
-        $stmt->bindParam(':id', $userID);
-        $stmt->execute();
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+            $stmt = $conn->prepare($query);
+            $stmt->bindParam(':name', $name);
+            $stmt->bindParam(':email', $email);
+            $stmt->bindParam(':password', $password);
+            $stmt->bindParam(':role', $role);
+            $stmt->execute();
+            $userID = $conn->lastInsertId();
+            if ($userID) {
+                $query = "SELECT * FROM users
+                where id = :id";
+                $stmt = $conn->prepare($query);
+                $stmt->bindParam(':id', $userID);
+                $stmt->execute();
+                $user = $stmt->fetch(\PDO::FETCH_ASSOC);
+            }
+        } catch (\Throwable $e) {
+            return 'Registration error: ' . $e->getMessage();
+        }
+
+
 
         if ($user) {
             switch ($role) {
@@ -119,7 +128,7 @@ class User
 
                 case 'Recruteur':
                     $dataArray = array_slice($data, 1);  // Remove the first element (PDO connection)
-                    if (isset($dataArray[0]) ) {
+                    if (isset($dataArray[0])) {
                         $companyName = $dataArray[0];
                         $query = "INSERT INTO recruteurs (company_name, user_id)
                               VALUES (:company_name, :user_id)";

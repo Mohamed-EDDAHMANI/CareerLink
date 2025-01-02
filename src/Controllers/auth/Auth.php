@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Controllers\auth;
+use App\Classes\User;
 
 class Auth
 {
@@ -35,7 +37,7 @@ class Auth
             }
             return false;
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return 'Registration error: ' . $e->getMessage();
         }
     }
