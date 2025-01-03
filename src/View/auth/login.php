@@ -1,3 +1,21 @@
+<?php
+
+session_start();
+
+require '../../../vendor/autoload.php';
+
+use App\Controllers\auth\Auth;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Get the email and password from the form
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    // Call the login method
+    $auth = new Auth();
+    $auth->login($email, $password);
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -42,11 +60,11 @@
                     <a href="#" class="text-xs text-center text-gray-500 uppercase">or login with email</a>
                     <span class="border-b w-1/5 lg:w-1/4"></span>
                 </div>
-                <form action="../../Controllers/auth/loginController.php">
+                <form action="" method="POST">
                 <div class="mt-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2">Email Address</label>
                     <input
-                        class="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
+                        name="email" class="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
                         type="email" />
                 </div>
                 <div class="mt-4">
@@ -55,7 +73,7 @@
                         <a href="#" class="text-xs text-gray-500">Forget Password?</a>
                     </div>
                     <input
-                        class="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
+                        name="password" class="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
                         type="password" />
                 </div>
                 <div class="mt-8">
@@ -64,7 +82,7 @@
                 </div>
                 <div class="mt-4 flex items-center justify-between">
                     <span class="border-b w-1/5 md:w-1/4"></span>
-                    <a href="#" class="text-xs text-gray-500 uppercase">or sign up</a>
+                    <a href="singUp.php" class="text-xs text-gray-500 uppercase">or sign up</a>
                     <span class="border-b w-1/5 md:w-1/4"></span>
                 </div>
                 </form>

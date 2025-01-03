@@ -2,37 +2,39 @@
 
 namespace App\Controllers\auth;
 use App\Classes\User;
+use App\Models\UserModel;
+
+
 
 class Auth
 {
-    private $conn;
 
-    public function __construct($conn)
-    {
-        $this->conn = $conn;
-    }
-
-    public function login($email, $password)
-    {
-        $user = User::login($email, $password, $this->conn);
-
-        if ($user) {
-            $this->createUserSession($user);
-            $this->redirectEffect($user);
+    public function login($email, $password){
+        $user = new User('',$email, $password);
+        $userModel = new UserModel();
+        $userFound = $userModel->findUserByEmailAndPassword($user);
+        
+        // print_r($userFound->getEmail());
+        if ($userFound == null) {
+           //handle user not found
+        }else{
+            $this->createUserSession($userFound);
+            $this->redirectEffect($userFound);
         }
-
         return false;
     }
 
     public function signup($name, $email, $password, $role, ...$additionalData)
     {
         try {
-            $user = User::singUp($name, $email, $password, $role, $this->conn, ...$additionalData);
-            var_dump($user);
+            //create user table
+            $user = new User($name, $email, $password, $role);
+            $userModel = new UserModel();
+            $newUser = $userModel->createNewUser($user, ...$additionalData);
 
-            if ($user && isset($user)) {
-                $this->createUserSession($user);
-                $this->redirectEffect($user);
+            if ($newUser instanceof User) {
+                $this->createUserSession($newUser);
+                $this->redirectEffect($newUser);
                 return true;
             }
             return false;
@@ -44,10 +46,10 @@ class Auth
 
     public function redirectEffect($user)
     {
-        switch ($user['role']) {
+        switch ($user->getRole()) {
             case 'Administrateur':
-                echo 'seccess';
-                // header("Location: admin_dashboard.php");
+                // echo 'seccess';
+                header("Location: ../../View/admin/dashboard.php");
                 break;
             case 'Candidat':
                 echo 'seccess creating Candidat';
@@ -78,9 +80,9 @@ class Auth
     private function createUserSession($user)
     {
         $_SESSION['user'] = [
-            'name' => $user['name'],
-            'email' => $user['email'],
-            'role' => $user['role']
+            'name' => $user->getName(),
+            'email' => $user->getEmail(),
+            'role' => $user->getRole()
         ];
     }
 
