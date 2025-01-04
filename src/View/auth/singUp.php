@@ -84,7 +84,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
 
                 <!-- Sign Up Form -->
-                <form class="space-y-6" action="../../Controllers/auth/singUpController.php" method="POST">
+                <form class="space-y-6" action="" method="POST">
+
+                <?php if (isset($_SESSION['error']['message'])): ?>
+                <span
+                    class="message bg-red-100 text-red-700 px-4 py-2 rounded-md flex items-center gap-2 font-medium shadow-sm border border-red-200 absolute top-4 left-1/2 transform -translate-x-1/2">
+                    <!-- Optional: Add an error icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        <p><?php echo $_SESSION['error']['message']; ?></p>
+                        <?php unset($_SESSION['error']['message']); ?>
+                    </span>
+                    <?php endif; ?>
                     <!-- Account Type Selection -->
                     <div class="grid grid-cols-2 gap-4 mb-6">
                         <label id="jobSeekerLabel" class="relative border rounded-xl p-4 cursor-pointer radio-checked">

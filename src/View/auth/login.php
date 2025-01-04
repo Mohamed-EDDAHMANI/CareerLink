@@ -32,9 +32,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="hidden lg:block lg:w-1/2 bg-cover"
                 style="background-image:url('https://images.unsplash.com/photo-1546514714-df0ccc50d7bf?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=667&q=80')">
             </div>
-            <div class="w-full p-8 lg:w-1/2">
+            <div class="w-full p-8 lg:w-1/2 ">
                 <h2 class="text-2xl font-semibold text-gray-700 text-center">Brand</h2>
                 <p class="text-xl text-gray-600 text-center">Welcome back!</p>
+                <?php if (isset($_SESSION['error']['message'])): ?>
+                    <span
+                        class="message bg-red-100 text-red-700 px-4 py-2 rounded-md flex items-center gap-2 font-medium shadow-sm border border-red-200 absolute top-4 left-1/2 transform -translate-x-1/2">
+                        <!-- Optional: Add an error icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        <p><?php echo $_SESSION['error']['message']; ?></p>
+                        <?php unset($_SESSION['error']['message']); ?>
+                    </span>
+                <?php endif; ?>
                 <a href="#"
                     class="flex items-center justify-center mt-4 text-white rounded-lg shadow-md hover:bg-gray-100">
                     <div class="px-4 py-3">
@@ -61,34 +74,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <span class="border-b w-1/5 lg:w-1/4"></span>
                 </div>
                 <form action="" method="POST">
-                <div class="mt-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2">Email Address</label>
-                    <input
-                        name="email" class="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
-                        type="email" />
-                </div>
-                <div class="mt-4">
-                    <div class="flex justify-between">
-                        <label class="block text-gray-700 text-sm font-bold mb-2">Password</label>
-                        <a href="#" class="text-xs text-gray-500">Forget Password?</a>
+                    <div class="mt-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Email Address</label>
+                        <input name="email"
+                            class="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
+                            type="email" />
                     </div>
-                    <input
-                        name="password" class="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
-                        type="password" />
-                </div>
-                <div class="mt-8">
-                    <button
-                        class="bg-gray-700 text-white font-bold py-2 px-4 w-full rounded hover:bg-gray-600">Login</button>
-                </div>
-                <div class="mt-4 flex items-center justify-between">
-                    <span class="border-b w-1/5 md:w-1/4"></span>
-                    <a href="singUp.php" class="text-xs text-gray-500 uppercase">or sign up</a>
-                    <span class="border-b w-1/5 md:w-1/4"></span>
-                </div>
+                    <div class="mt-4">
+                        <div class="flex justify-between">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Password</label>
+                            <a href="#" class="text-xs text-gray-500">Forget Password?</a>
+                        </div>
+                        <input name="password"
+                            class="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
+                            type="password" />
+                    </div>
+                    <div class="mt-8">
+                        <button
+                            class="bg-blue-700 text-white font-bold py-2 px-4 w-full rounded hover:bg-blue-600">Login</button>
+                    </div>
+                    <div class="mt-4 flex items-center justify-between">
+                        <span class="border-b w-1/5 md:w-1/4"></span>
+                        <a href="singUp.php" class="text-xs text-gray-500 uppercase">or sign up</a>
+                        <span class="border-b w-1/5 md:w-1/4"></span>
+                    </div>
                 </form>
             </div>
         </div>
     </div>
+    <script>
+        const message = document.querySelector('.message');
+        if (message) {
+            setTimeout(() => {
+                message.remove();
+            }, 5000);
+        }
+    </script>
 </body>
 
 </html>

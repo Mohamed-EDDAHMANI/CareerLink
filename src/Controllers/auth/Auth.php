@@ -9,19 +9,25 @@ use App\Models\UserModel;
 class Auth
 {
 
+    private UserModel $userModel;
+
+    public function __construct()   {
+       $this->userModel = new UserModel();
+    }
+
     public function login($email, $password){
+
         $user = new User('',$email, $password);
-        $userModel = new UserModel();
-        $userFound = $userModel->findUserByEmailAndPassword($user);
+        $userFound = $this->userModel->findUserByEmailAndPassword($user);
         
-        // print_r($userFound->getEmail());
-        if ($userFound == null) {
-           //handle user not found
-        }else{
+        if ($userFound instanceof User) {
             $this->createUserSession($userFound);
             $this->redirectEffect($userFound);
+        }else{
+            $_SESSION['error']['message'] = 'Invalid email or password';
+            header("Location: ../../View/auth/login.php");
+            exit();
         }
-        return false;
     }
 
     public function signup($name, $email, $password, $role, ...$additionalData)
@@ -29,15 +35,17 @@ class Auth
         try {
             //create user table
             $user = new User($name, $email, $password, $role);
-            $userModel = new UserModel();
-            $newUser = $userModel->createNewUser($user, ...$additionalData);
+            $newUser = $this->userModel->createNewUser($user, ...$additionalData);
 
             if ($newUser instanceof User) {
                 $this->createUserSession($newUser);
                 $this->redirectEffect($newUser);
                 return true;
+            }else{
+                $_SESSION['error']['message'] = 'Invalid email or password';
+                header("Location: ../../View/auth/login.php");
+                exit();
             }
-            return false;
 
         } catch (\Exception $e) {
             return 'Registration error: ' . $e->getMessage();
@@ -48,17 +56,16 @@ class Auth
     {
         switch ($user->getRole()) {
             case 'Administrateur':
-                // echo 'seccess';
                 header("Location: ../../View/admin/dashboard.php");
                 break;
             case 'Candidat':
-                echo 'seccess creating Candidat';
-                // header("Location: user_dashboard.php");
+                header("Location: ../../View/candidate/home.php");
                 break;
-            case 'Recruteur':
-                echo 'seccess creating Recruteur';
-                // header("Location: user_dashboard.php");
+                case 'Recruteur':
+                    echo 'seccess creating Recruteur';
+                    header("Location: ../../View/recruteur/home.php");
                 break;
+
             default:
                 echo 'seccess';
                 // header("Location: login.php?error=Unknown role");
