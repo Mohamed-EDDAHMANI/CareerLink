@@ -124,11 +124,9 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div class="bg-white rounded-lg shadow p-6">
                 <h2 class="text-lg font-semibold text-gray-800 mb-4">Jobs per Category</h2>
-                <canvas id="categoryChart" height="200"></canvas>
             </div>
             <div class="bg-white rounded-lg shadow p-6">
                 <h2 class="text-lg font-semibold text-gray-800 mb-4">Most Active Recruiters</h2>
-                <canvas id="recruiterChart" height="200">nnnn</canvas>
             </div>
         </div>
     </div>

@@ -12,17 +12,18 @@ $catigories = $catigorieInstent->getCatigories();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $category_name = $_POST['category_name'];
-    if ($_POST['id']) {
+    if (isset($_POST['id'])) {
         $category_id = $_POST['id'];
     } else {
         $category_id = null;
     }
-
     $catigorieInstent->createCategorie($category_name, $category_id);
+    $catigories = $catigorieInstent->getCatigories();
 }
 if (isset($_GET['id'])) {
     $category_id = $_GET['id'];
-    $categorie = $catigorieInstent->getCategoryById($category_id);
+    $categorie = $catigorieInstent->deleteCategoryById($category_id);
+    $catigories = $catigorieInstent->getCatigories();
 }
 ?>
 <!DOCTYPE html>
@@ -32,7 +33,6 @@ if (isset($_GET['id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/chart.js/3.7.0/chart.min.js"></script>
     <title>CareerLink Admin Management</title>
 </head>
 
@@ -45,7 +45,7 @@ if (isset($_GET['id'])) {
                 <span class="text-2xl font-extrabold">CareerLink</span>
             </div>
 
-            <nav class="space-y-2">
+            <nav class="space-y-2" id="category">
                 <a href="" class="block py-2.5 px-4 rounded transition duration-200 bg-gray-700">
                     Dashboard
                 </a>
@@ -93,34 +93,7 @@ if (isset($_GET['id'])) {
         function hideModal(modalId) {
             document.getElementById(modalId).classList.add('hidden');
         }
-
-        function getCategoryById(id) {
-
-            fetch(`dashboard.php?id=${id}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    document.getElementById('edit-category-name').value = data.category_name;
-                    // document.getElementById('editCategoryModal').classList.remove('hidden');
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error fetching category details');
-                });
-            showModal('editCategoryModal');
-        }
-        let inputCategory = document.getElementById('edit-category-name')
-        inputCategory.addEventListener('change', function (e) {
-            e.preventDefault();
-            showModal('editCategoryModal');
-        })
-        if (inputCategory.length < 0) {
-            document.getElementById('editCategoryModal').classList.add('hidden');      
-        }
+             
     </script>
 </body>
 

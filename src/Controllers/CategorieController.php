@@ -21,14 +21,9 @@ class CategorieController{
 
         $resultInsert = $this->categorieModel->insertCategorie($categorie);
         if($resultInsert){
-            $_SESSION['success']['message'] = $category_name .' Category created successfully';
+            $_SESSION['success']['message'] = $category_name .' Successfully';
         }else{
             $_SESSION['error']['message'] = $category_name .' Category already exist';
-            // $_SESSION['error']['effect'] = '<script>
-            // function showModal(modalId) {
-            //     document.getElementById(modalId).classList.remove(\'hidden\');
-            // };
-            // </script>';
             header("Location: ../../View/admin/dashboard.php");
             exit();
         }
@@ -37,8 +32,10 @@ class CategorieController{
     public function getCatigories(){
         return $this->categorieModel->getAllCategories();
     }
-    public function getCategoryById($category_id){
-        return $this->categorieModel->getCategoryByIdForUpdate($category_id);
+
+   
+    public function deleteCategoryById($category_id){
+        return $this->categorieModel->dropCayegorie($category_id);
     }
 }
 

@@ -76,6 +76,15 @@ class CategorieModel
         return $categories;
     }
 
+    public function dropCayegorie($category_id)
+    {
+        $query = "DELETE FROM categories WHERE id = $category_id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $categories = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $categories;
+    }
+
 
 }
 ?>

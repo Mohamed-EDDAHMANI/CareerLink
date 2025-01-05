@@ -45,9 +45,9 @@
                                 <thead class="bg-gray-50">
                                     <tr>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                            Category Name</th>
+                                            ID</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                            Description</th>
+                                            Category Name</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Jobs
                                             Count</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
@@ -59,42 +59,27 @@
                                 <tbody class="bg-white divide-y divide-gray-200">
                                     <?php if ($catigories): ?>
                                         <?php foreach ($catigories as $category): ?>
-                                            <tr>
-                                                <?php echo '<td class="px-6 py-4 whitespace-nowrap">' . $category['category_name'] . '</td>' ?>
-                                                <td class="px-6 py-4">Tech and IT related jobs</td>
-                                                <td class="px-6 py-4">145</td>
-                                                <td class="px-6 py-4">
-                                                    <span
-                                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                        Active
-                                                    </span>
-                                                </td>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                                    <a href="dashboard.php?id=<?php echo $category['id']; ?>" onclick="showModal('editCategoryModal')"
-                                                        class="text-blue-600 hover:text-blue-900 mr-4">Edit</a>
-                                                    <button onclick="showModal('deleteCategoryModal')"
-                                                        class="text-red-600 hover:text-red-900">Delete</button>
-                                                </td>
-                                            </tr>
+                                            <form action="" method="POST">
+                                                <tr>
+                                                    <?php echo '<td class="px-6 py-4 whitespace-nowrap"><input class=" whitespace-nowrap" name="id" value="' . $category['id'] . '" readonly></td>' ?>
+                                                    <?php echo '<td class="px-6 py-4 whitespace-nowrap"><input class=" whitespace-nowrap" name="category_name" value="' . $category['category_name'] . '"></td>' ?>
+                                                    <td class="px-6 py-4">145</td>
+                                                    <td class="px-6 py-4">
+                                                        <span
+                                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                            Active
+                                                        </span>
+                                                    </td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                                        <button type="submit" onclick="showModal('editCategoryModal')"
+                                                            class="text-blue-600 hover:text-blue-900 mr-4">Edit</button>
+                                                        <a  href="dashboard.php?id=<?php echo $category['id']; ?>" 
+                                                            class="text-red-600 hover:text-red-900">Delete</a>
+                                                    </td>
+                                                </tr>
+                                            </form>
                                         <?php endforeach; ?>
                                     <?php endif; ?>
-                                    <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap">Marketing</td>
-                                        <td class="px-6 py-4">Digital marketing positions</td>
-                                        <td class="px-6 py-4">89</td>
-                                        <td class="px-6 py-4">
-                                            <span
-                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                Active
-                                            </span>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                            <button onclick="showModal('editCategoryModal')"
-                                                class="text-blue-600 hover:text-blue-900 mr-4">Edit</button>
-                                            <button onclick="showModal('deleteCategoryModal')"
-                                                class="text-red-600 hover:text-red-900">Delete</button>
-                                        </td>
-                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -144,29 +129,6 @@
     </div>
 </div>
 
-<!-- Edit Category Modal -->
-<div id="editCategoryModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
-    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-        <div class="mt-3">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">Edit Category</h3>
-            <form class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Category Name</label>
-                    <?php echo '<input type="text"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                        value="' . $categorie['category_name'] .'">' ?>
-                </div>
-                <div class="flex justify-end gap-3">
-                    <button type="button" onclick="hideModal('editCategoryModal')"
-                        class="bg-gray-200 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-300">Cancel</button>
-                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Save
-                        Changes</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
 <!-- Delete Category Modal -->
 <div id="deleteCategoryModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full">
     <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
@@ -177,7 +139,8 @@
             <div class="flex justify-center gap-3">
                 <button onclick="hideModal('deleteCategoryModal')"
                     class="bg-gray-200 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-300">Cancel</button>
-                <button class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">Delete</button>
+                <a href="dashboard.php?id=<?php echo $category['id']; ?>"
+                    class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">Delete</a>
             </div>
         </div>
     </div>
