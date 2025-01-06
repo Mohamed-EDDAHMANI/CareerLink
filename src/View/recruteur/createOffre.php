@@ -8,41 +8,37 @@ use App\Controllers\TagController;
 use App\Controllers\OffreController;
 use App\Classes\Offre;
 
-$catigorieInstent = new CategorieController();
-$tagInstent = new TagController();
-$tags = $tagInstent->getTags();
-$categoris = $catigorieInstent->getCatigories();
+//create instens
+$catigorieInstens = new CategorieController();
+$tagInstens = new TagController();
+$offerControllerInstens = new OffreController();
+
+//get data
+$tags = $tagInstens->getTags();
+$categoris = $catigorieInstens->getCatigories();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
+    
     if (isset($_POST['tags']) && is_array($_POST['tags'])) {
         $selectedTags = $_POST['tags'];
     }
-
+    
     // Récupérer les données du formulaire
-    $intitule = $_POST['post'];
-    $categorie_id = $_POST['categorie_id'];
-    $location = $_POST['location'];
+    $post = $_POST['post'];
+    $description = $_POST['description'];
     $salary = $_POST['salary'];
     $qualification = $_POST['qualification'];
-    $specialisation = $_POST['specialisation'];
-    $tags = $_POST['tags'];
-    $description = $_POST['description'];
+    $location = $_POST['location'];
+    $category_id = $_POST['categorie_id'];
+    $recruiter_id = $_SESSION['user']['id'];
+    if($recruiter_id){
+        $offreInstens = new Offre('', $post, $description, $salary, $qualification, $location, $recruiter_id, $category_id);
+        $offerControllerInstens->createOffre($offreInstens, $selectedTags);
+    }else{
+        $_SESSION['error']['message'] = 'Invalid Offre informations';
+        exit();
+    }
 
-    // Créer une nouvelle offre
-    // $offre = new Offre();
-    // $offre->setIntitule($intitule);
-    // $offre->setCategorie($categorie);
-    // $offre->setTypeContrat($typeContrat);
-    // $offre->setVille($ville);
-    // $offre->setSalaire($salaire);
-    // $offre->setNiveauEtudes($niveauEtudes);
-    // $offre->setSpecialisation($specialisation);
-    // $offre->setTags($tags);
-    // $offre->setDescription($description);
-
-    // // Enregistrer l'offre dans la base de données
-    // $offre->create();
 }
 
 
@@ -65,6 +61,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <body class="bg-gray-50">
     <!-- Navigation -->
     <nav class="bg-white border-b border-gray-200 fixed w-full z-30 top-0">
+    <?php echo $_SESSION['user']['id'] ?>
+    <?php echo 'hello' ?>
         <div class="px-4 py-3">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-4">
@@ -76,6 +74,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
         </div>
     </nav>
+
+    <!-- create secces message -->
+    <?php if (isset($_SESSION['success']['message'])): ?>
+        <span
+            class="message bg-green-100 text-green-700 px-4 py-2 rounded-md flex items-center gap-2 font-medium shadow-sm border border-red-200 absolute top-4 left-1/2 transform -translate-x-1/2 z-50">
+            <!-- Optional: Add an error icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-700" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                    clip-rule="evenodd" />
+            </svg>
+            <p><?php echo $_SESSION['success']['message']; ?></p>
+            <?php unset($_SESSION['success']['message']); ?>
+        </span>
+    <?php endif; ?>
+
+    <!-- create error message -->
+    <?php if (isset($_SESSION['error']['message'])): ?>
+        <span
+            class="message bg-red-100 text-red-700 px-4 py-2 rounded-md flex items-center gap-2 font-medium shadow-sm border border-red-200 absolute top-4 left-1/2 transform -translate-x-1/2 z-50">
+            <!-- Optional: Add an error icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                    clip-rule="evenodd" />
+            </svg>
+            <p><?php echo $_SESSION['error']['message']; ?></p>
+            <?php unset($_SESSION['error']['message']); ?>
+        </span>
+    <?php endif; ?>
 
     <!-- Main Content -->
     <div class="pt-20 pb-8 px-4 max-w-4xl mx-auto">
@@ -98,8 +126,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 Catégorie *
                             </label>
                             <select required
-                                class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                <option value="" name="categorie_id">Sélectionnez une catégorie</option>
+                                class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" name="categorie_id">
+                                <option value="">Sélectionnez une catégorie</option>
                                 <?php if ($categoris): ?>
                                     <?php foreach ($categoris as $categori): ?>
                                         <?php echo '<option value="' . $categori['id'] . '">' . $categori['category_name'] . '</option>'; ?>
@@ -228,6 +256,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </form>
     </div>
 
+
+    <script>
+        const message = document.querySelector('.message');
+        if (message) {
+            setTimeout(() => {
+                message.remove();
+            }, 3000);
+        }
+
+    </script>
 </body>
 
 </html>

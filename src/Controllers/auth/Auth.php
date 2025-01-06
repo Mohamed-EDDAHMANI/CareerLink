@@ -17,11 +17,11 @@ class Auth
 
     public function login($email, $password){
 
-        $user = new User('',$email, $password);
-        $userFound = $this->userModel->findUserByEmailAndPassword($user);
-        
+        $user = new User('',$email, password: $password);
+        $result = $this->userModel->findUserByEmailAndPassword($user);
+        $userFound = $result['user'];
         if ($userFound instanceof User) {
-            $this->createUserSession($userFound);
+            $this->createUserSession($result);
             $this->redirectEffect($userFound);
         }else{
             $_SESSION['error']['message'] = 'Invalid email or password';
@@ -41,11 +41,11 @@ class Auth
 
             if ($newUser instanceof User) {
                 $this->createUserSession($result);
-                // $this->redirectEffect($newUser);
+                $this->redirectEffect($newUser);
                 return true;
             }else{
                 $_SESSION['error']['message'] = 'Invalid email or password';
-                // header("Location: ../../View/auth/singUp.php");
+                header("Location: ../../View/auth/singUp.php");
                 exit();
             }
 
@@ -58,15 +58,14 @@ class Auth
     {
         switch ($user->getRole()) {
             case 'Administrateur':
-                header("Location: ../../View/admin/dashboard.php");
+                header("Location: ../../View/admin/home.php");
                 break;
             case 'Candidat':
                 header("Location: ../../View/candidate/home.php");
                 break;
-                case 'Recruteur':
-                    echo 'seccess creating Recruteur';
-                    header("Location: ../../View/recruteur/home.php");
-                break;
+            case 'Recruteur':
+                header("Location: ../../View/recruteur/dashboard.php");
+            break;
 
             default:
                 echo 'seccess';

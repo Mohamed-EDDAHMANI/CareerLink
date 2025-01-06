@@ -27,9 +27,16 @@ class UserModel
         $stmt->bindParam(':password', $passwprd);
         $stmt->execute();
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $userID =  $row['id'];
+        $role = $row['role'];
 
         if ($row) {
-            return new User($row['name'], $row['email'], $row['password'], $row['role']);
+            $idRole = $this->getRoleId($role ,$userID);
+            
+            return [
+                'user' => new User($row['name'], $row['email'], $row['password'], $row['role']),
+                'id' => $idRole,
+            ];
         } else {
             return false;
         }
@@ -77,24 +84,24 @@ class UserModel
                     break;
 
                 case 'Candidat':
-                        $skills = $additionalData[0];
-                        $diplome = $additionalData[1];
-                        $query = "INSERT INTO candidats (skills, deplome, user_id)
+                    $skills = $additionalData[0];
+                    $diplome = $additionalData[1];
+                    $query = "INSERT INTO candidats (skills, deplome, user_id)
                               VALUES (:skills, :deplome, :user_id)";
-                        $stmt = $this->conn->prepare($query);
-                        $stmt->bindParam(':skills', $skills);
-                        $stmt->bindParam(':deplome', $diplome);
-                        $stmt->bindParam(':user_id', $userID);
-                    
+                    $stmt = $this->conn->prepare($query);
+                    $stmt->bindParam(':skills', $skills);
+                    $stmt->bindParam(':deplome', $diplome);
+                    $stmt->bindParam(':user_id', $userID);
+
                     break;
 
                 case 'Recruteur':
-                        $companyName = $additionalData[0];
-                        $query = "INSERT INTO recruteurs (company_name, user_id)
+                    $companyName = $additionalData[0];
+                    $query = "INSERT INTO recruteurs (company_name, user_id)
                               VALUES (:company_name, :user_id)";
-                        $stmt = $this->conn->prepare($query);
-                        $stmt->bindParam(':company_name', $companyName);
-                        $stmt->bindParam(':user_id', $userID);
+                    $stmt = $this->conn->prepare($query);
+                    $stmt->bindParam(':company_name', $companyName);
+                    $stmt->bindParam(':user_id', $userID);
                     break;
 
                 default:
@@ -105,17 +112,58 @@ class UserModel
             if ($stmt->execute()) {
                 // Get the last inserted ID
                 $lastInsertId = $this->conn->lastInsertId();
-        
+
                 // Return the new user instance and the last inserted ID
                 return [
                     'user' => $newUser,
                     'id' => $lastInsertId,
                 ];
-            }else{
+            } else {
                 return false;
             }
         } else {
             return false;
+        }
+    }
+
+
+    public function getRoleId($role ,$id){
+        switch ($role) {
+            case 'Administrateur':
+                $query = "SELECT admins.id FROM admins
+                INNER JOIN users ON users.id = admins.user_id
+                WHERE users.id = :id";
+                $stmt = $this->conn->prepare($query);
+                $stmt->bindParam(':id', $id);
+                $stmt->execute();
+                $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+                return $row['id'];
+
+            case 'Candidat':
+
+                $query = "SELECT candidats.id FROM candidats
+                INNER JOIN users ON users.id = candidats.user_id
+                WHERE users.id = :id";
+                $stmt = $this->conn->prepare($query);
+                $stmt->bindParam(':id', $id);
+                $stmt->execute();
+                $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+                return $row['id'];
+
+            case 'Recruteur':
+                echo $id;
+                $query = "SELECT recruteurs.id FROM recruteurs
+                INNER JOIN users ON users.id = recruteurs.user_id
+                WHERE users.id = :id";
+                $stmt = $this->conn->prepare($query);
+                $stmt->bindParam(':id', $id);
+                $stmt->execute();
+                $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+                return $row['id'];
+
+            default:
+                echo 'Role is not exist';
+                break;
         }
     }
 
