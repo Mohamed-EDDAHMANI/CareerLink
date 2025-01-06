@@ -77,29 +77,24 @@ class UserModel
                     break;
 
                 case 'Candidat':
-                    $dataArray = array_slice($additionalData, 1);  // Remove the first element (PDO connection)
-                    if (isset($dataArray[0]) && isset($dataArray[1])) {
-                        $skills = $dataArray[0];
-                        $diplome = $dataArray[1];
+                        $skills = $additionalData[0];
+                        $diplome = $additionalData[1];
                         $query = "INSERT INTO candidats (skills, deplome, user_id)
                               VALUES (:skills, :deplome, :user_id)";
                         $stmt = $this->conn->prepare($query);
                         $stmt->bindParam(':skills', $skills);
                         $stmt->bindParam(':deplome', $diplome);
                         $stmt->bindParam(':user_id', $userID);
-                    }
+                    
                     break;
 
                 case 'Recruteur':
-                    $dataArray = array_slice($additionalData, 1);  // Remove the first element (PDO connection)
-                    if (isset($dataArray[0])) {
-                        $companyName = $dataArray[0];
+                        $companyName = $additionalData[0];
                         $query = "INSERT INTO recruteurs (company_name, user_id)
                               VALUES (:company_name, :user_id)";
                         $stmt = $this->conn->prepare($query);
                         $stmt->bindParam(':company_name', $companyName);
                         $stmt->bindParam(':user_id', $userID);
-                    }
                     break;
 
                 default:
@@ -107,7 +102,18 @@ class UserModel
                     break;
             }
             //i have to hundel the return of $newUser
-            return $stmt->execute() ? $newUser : false;
+            if ($stmt->execute()) {
+                // Get the last inserted ID
+                $lastInsertId = $this->conn->lastInsertId();
+        
+                // Return the new user instance and the last inserted ID
+                return [
+                    'user' => $newUser,
+                    'id' => $lastInsertId,
+                ];
+            }else{
+                return false;
+            }
         } else {
             return false;
         }

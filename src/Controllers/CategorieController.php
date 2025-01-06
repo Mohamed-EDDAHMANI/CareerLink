@@ -24,7 +24,7 @@ class CategorieController{
             $_SESSION['success']['message'] = $category_name .' Successfully';
         }else{
             $_SESSION['error']['message'] = $category_name .' Category already exist';
-            header("Location: ../../View/admin/dashboard.php");
+            header("Location: ../../View/admin/category.php");
             exit();
         }
     }

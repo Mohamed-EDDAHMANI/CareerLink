@@ -4,26 +4,26 @@ session_start();
 
 require '../../../vendor/autoload.php';
 
-use App\Controllers\CategorieController;
+use App\Controllers\TagController;
 
-$catigorieInstent = new CategorieController();
+$tagInstent = new TagController();
 
-$catigories = $catigorieInstent->getCatigories();
+$tags = $tagInstent->getTags();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $category_name = $_POST['category_name'];
+    $tag_name = $_POST['tag_name'];
     if (isset($_POST['id'])) {
-        $category_id = $_POST['id'];
+        $tag_id = $_POST['id'];
     } else {
-        $category_id = null;
+        $tag_id = null;
     }
-    $catigorieInstent->createCategorie($category_name, $category_id);
-    $catigories = $catigorieInstent->getCatigories();
+    $tagInstent->createTag($tag_name, $tag_id);
+    $tags = $tagInstent->getTags();
 }
 if (isset($_GET['id'])) {
-    $category_id = $_GET['id'];
-    $categorie = $catigorieInstent->deleteCategoryById($category_id);
-    $catigories = $catigorieInstent->getCatigories();
+    $tag_id = $_GET['id'];
+    $tagInstent->deleteTagById($tag_id);
+    $tags = $tagInstent->getTags();
 }
 ?>
 <!DOCTYPE html>
@@ -46,13 +46,13 @@ if (isset($_GET['id'])) {
             </div>
 
             <nav class="space-y-2" id="category">
-                <a href="home.php" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:bg-gray-700">
+                <a href="home.php" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">
                     Dashboard
                 </a>
-                <a href="category.php" class="block py-2.5 px-4 rounded transition duration-200 bg-gray-700">
+                <a href="category.php" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">
                     Categories
                 </a>
-                <a href="tag.php" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">
+                <a href="tag.php" class="block py-2.5 px-4 rounded transition duration-200 bg-gray-700">
                     Tags
                 </a>
                 <a class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">
@@ -80,7 +80,7 @@ if (isset($_GET['id'])) {
                             <div class="flex items-center space-x-4">
                                 <button onclick="showModal('addCategoryModal')"
                                     class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-                                    Add New Category
+                                    Add New Tag
                                 </button>
                             </div>
                         </header>
@@ -106,7 +106,7 @@ if (isset($_GET['id'])) {
                             <div class="container mx-auto px-4 py-8">
                                 <div class="bg-white rounded-lg shadow">
                                     <div class="p-6">
-                                        <h2 class="text-xl font-semibold text-gray-800 mb-6">Category Management</h2>
+                                        <h2 class="text-xl font-semibold text-gray-800 mb-6">Tag Management</h2>
 
                                         <!-- Category List -->
                                         <div class="overflow-x-auto">
@@ -118,7 +118,7 @@ if (isset($_GET['id'])) {
                                                             ID</th>
                                                         <th
                                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                                            Category Name</th>
+                                                            Tag Name</th>
                                                         <th
                                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                                                             Jobs
@@ -132,12 +132,12 @@ if (isset($_GET['id'])) {
                                                     </tr>
                                                 </thead>
                                                 <tbody class="bg-white divide-y divide-gray-200">
-                                                    <?php if ($catigories): ?>
-                                                        <?php foreach ($catigories as $category): ?>
+                                                    <?php if ($tags): ?>
+                                                        <?php foreach ($tags as $tag): ?>
                                                             <form action="" method="POST">
                                                                 <tr>
-                                                                    <?php echo '<td class="px-6 py-4 whitespace-nowrap"><input class=" whitespace-nowrap" name="id" value="' . $category['id'] . '" readonly></td>' ?>
-                                                                    <?php echo '<td class="px-6 py-4 whitespace-nowrap"><input class=" whitespace-nowrap" name="category_name" value="' . $category['category_name'] . '"></td>' ?>
+                                                                    <?php echo '<td class="px-6 py-4 whitespace-nowrap"><input class=" whitespace-nowrap" name="id" value="' . $tag['id'] . '" readonly></td>' ?>
+                                                                    <?php echo '<td class="px-6 py-4 whitespace-nowrap"><input class=" whitespace-nowrap" name="tag_name" value="' . $tag['tag_name'] . '"></td>' ?>
                                                                     <td class="px-6 py-4">145</td>
                                                                     <td class="px-6 py-4">
                                                                         <span
@@ -149,7 +149,7 @@ if (isset($_GET['id'])) {
                                                                         <button type="submit"
                                                                             onclick="showModal('editCategoryModal')"
                                                                             class="text-blue-600 hover:text-blue-900 mr-4">Edit</button>
-                                                                        <a href="category.php?id=<?php echo $category['id']; ?>"
+                                                                        <a href="tag.php?id=<?php echo $tag['id']; ?>"
                                                                             class="text-red-600 hover:text-red-900">Delete</a>
                                                                     </td>
                                                                 </tr>
@@ -188,11 +188,11 @@ if (isset($_GET['id'])) {
                     class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full">
                     <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
                         <div class="mt-3">
-                            <h3 class="text-lg font-medium text-gray-900 mb-4">Add New Category</h3>
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">Add New Tag</h3>
                             <form class="space-y-4" action="" method="POST">
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700">Category Name</label>
-                                    <input type="text" name="category_name"
+                                    <label class="block text-sm font-medium text-gray-700">Tag Name</label>
+                                    <input type="text" name="tag_name"
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                         placeholder="Enter category name">
                                 </div>
@@ -201,7 +201,7 @@ if (isset($_GET['id'])) {
                                         class="bg-gray-200 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-300">Cancel</button>
                                     <button type="submit"
                                         class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Add
-                                        Category</button>
+                                        Tag</button>
                                 </div>
                             </form>
                         </div>
@@ -212,7 +212,6 @@ if (isset($_GET['id'])) {
     </div>
 
     <script>
-
 
         const message = document.querySelector('.message');
         if (message) {
@@ -228,6 +227,7 @@ if (isset($_GET['id'])) {
         function hideModal(modalId) {
             document.getElementById(modalId).classList.add('hidden');
         }
+
 
     </script>
 </body>

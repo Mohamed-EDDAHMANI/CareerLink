@@ -35,15 +35,17 @@ class Auth
         try {
             //create user table
             $user = new User($name, $email, $password, $role);
-            $newUser = $this->userModel->createNewUser($user, ...$additionalData);
+            $result = $this->userModel->createNewUser($user, ...$additionalData);
+
+            $newUser = $result['user'];
 
             if ($newUser instanceof User) {
-                $this->createUserSession($newUser);
-                $this->redirectEffect($newUser);
+                $this->createUserSession($result);
+                // $this->redirectEffect($newUser);
                 return true;
             }else{
                 $_SESSION['error']['message'] = 'Invalid email or password';
-                header("Location: ../../View/auth/login.php");
+                // header("Location: ../../View/auth/singUp.php");
                 exit();
             }
 
@@ -84,12 +86,16 @@ class Auth
         return false;
     }
 
-    private function createUserSession($user)
+    private function createUserSession($result)
     {
+        $user = $result['user'];
+        $lastInsertId = $result['id'];
+        echo $lastInsertId;
         $_SESSION['user'] = [
             'name' => $user->getName(),
             'email' => $user->getEmail(),
-            'role' => $user->getRole()
+            'role' => $user->getRole(),
+            'id' => $lastInsertId
         ];
     }
 

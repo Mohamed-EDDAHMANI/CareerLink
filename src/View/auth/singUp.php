@@ -17,19 +17,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $auth = new Auth();
 
     switch ($role) {
-        case 'Administrateur':
-            $auth->signup($name, $email, $password, $role);
-            break;
-
         case 'Candidat':
             $skills = $_POST['skills'];
             $deplome = $_POST['deplome'];
-            $auth->signup($name, $email, $password, $role, $conn, $skills, $deplome);
+            $auth->signup($name, $email, $password, $role,  $skills, $deplome);
             break;
 
         case 'Recruteur':
             $companyName = $_POST['companyName'];
-            $auth->signup($name, $email, $password, $role, $conn, $companyName);
+            $auth->signup($name, $email, $password, $role,  $companyName);
 
             break;
 
