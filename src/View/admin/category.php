@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 if (isset($_GET['id'])) {
     $category_id = $_GET['id'];
-    $categorie = $catigorieInstent->deleteCategoryById($category_id);
+    $catigorieInstent->deleteCategoryById($category_id);
     $catigories = $catigorieInstent->getCatigories();
 }
 ?>

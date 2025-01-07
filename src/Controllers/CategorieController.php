@@ -35,7 +35,8 @@ class CategorieController{
 
    
     public function deleteCategoryById($category_id){
-        return $this->categorieModel->dropCayegorie($category_id);
+        $this->categorieModel->dropCayegorie($category_id);
+        $_SESSION['success']['message'] = 'Deleted Successfully';
     }
 }
 

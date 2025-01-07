@@ -1,12 +1,13 @@
-<?php 
+<?php
 
 namespace App\Models;
 
 use App\Config\Database;
 use App\Classes\Offre;
 
-class OffreModel{
-    
+class OffreModel
+{
+
     private $conn;
 
     public function __construct()
@@ -46,7 +47,7 @@ class OffreModel{
                 $stmt->execute();
                 $row = $stmt->fetch(\PDO::FETCH_ASSOC);
                 return new Offre($row['id'], $row['post'], $row['description'], $row['salary'], $row['qualification'], $row['location'], $row['recruteur_id'], $row['category_id']);
-            }else{
+            } else {
                 return false;
             }
         } catch (\Exception $e) {
@@ -54,18 +55,16 @@ class OffreModel{
         }
     }
 
-    public function insertTagsToOffre($id_Offre ,$selectedTags)
+    public function insertTagsToOffre($id_Offre, $selectedTags)
     {
-        var_dump($selectedTags);
         try {
             foreach ($selectedTags as $tag) {
-                var_dump($tag);
                 $query = "INSERT INTO offres_tags (offre_id , tag_id)
                 VALUES (:offre_id, :tag_id)";
                 $stmt = $this->conn->prepare($query);
                 $stmt->bindParam(':offre_id', $id_Offre);
                 $stmt->bindParam(':tag_id', $tag);
-                return $stmt->execute();
+                $stmt->execute();
             }
         } catch (\Throwable $th) {
             return false;
@@ -74,15 +73,15 @@ class OffreModel{
 
     public function getAllOffres()
     {
-        $query = "SELECT * FROM offres";
+        $query = "SELECT offres.id, post, description, salary, qualification, location, category_name, categories.id as categoryId, categories.category_name,   GROUP_CONCAT(tags.tag_name) as tags, GROUP_CONCAT(tags.id) as tagID FROM offres
+        INNER JOIN categories ON categories.id = offres.category_id
+        INNER JOIN offres_tags ON offres.id = offres_tags.offre_id
+        INNER JOIN tags ON offres_tags.tag_id = tags.id
+        GROUP BY offres.id";
         $stmt = $this->conn->prepare($query);
-        return $stmt->execute();
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);  
     }
+
 }
-
-
-
-
-
-
 ?>

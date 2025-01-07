@@ -61,8 +61,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <body class="bg-gray-50">
     <!-- Navigation -->
     <nav class="bg-white border-b border-gray-200 fixed w-full z-30 top-0">
-    <?php echo $_SESSION['user']['id'] ?>
-    <?php echo 'hello' ?>
         <div class="px-4 py-3">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-4">
@@ -142,9 +140,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <select required
                                 class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                                 <option value="">Sélectionnez un type</option>
-                                <option value="cdi">CDI</option>
-                                <option value="cdd">CDD</option>
-                                <option value="interim">Intérim</option>
+                                <option value="CDI">CDI</option>
+                                <option value="CDD">CDD</option>
+                                <option value="Intérim">Intérim</option>
                                 <option value="internship">Stage</option>
                                 <option value="apprenticeship">Alternance</option>
                             </select>
@@ -198,11 +196,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <select required name="qualification"
                                 class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                                 <option value="">Sélectionnez un niveau</option>
-                                <option value="bac">Bac</option>
-                                <option value="bac2">Bac+2 - DUT/BTS</option>
-                                <option value="bac3">Bac+3 - Licence</option>
-                                <option value="bac5">Bac+5 - Master</option>
-                                <option value="bac8">Bac+8 - Doctorat</option>
+                                <option value="Bac">Bac</option>
+                                <option value="Bac+2 - DUT/BTS">Bac+2 - DUT/BTS</option>
+                                <option value="Bac+3 - Licence">Bac+3 - Licence</option>
+                                <option value="Bac+5 - Master">Bac+5 - Master</option>
+                                <option value="Bac+8 - Doctorat">Bac+8 - Doctorat</option>
                             </select>
                         </div>
                     </div>
@@ -215,7 +213,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 <?php if ($tags): ?>
                                     <?php foreach ($tags as $tag): ?>
                                         <label class="flex items-center space-x-2">
-                                            <?php echo '<input type="checkbox" name="tags[]" value="' . $tag['id'] . '" 
+                                            <?php echo '<input type="checkbox" name="tags[]" value=' . $tag['id'] . ' 
                                                 class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"> '; ?>
                                             <?php echo '<span class="text-sm text-gray-700"># ' . $tag['tag_name'] . '</span>'; ?>
                                         </label>
