@@ -9,7 +9,15 @@ require_once '../../../vendor/autoload.php';
 use App\Controllers\OffreController;
 
 $offreController = new OffreController();
-$ComplexData = $offreController->getOffres();
+if (isset($_SESSION['user'])) {
+    $recruteurId = $_SESSION['user']['id'];
+}
+$ComplexData = $offreController->getOffresById($recruteurId);
+
+if (isset($_GET['id'])) {
+    $offreController->deleteOffre($_GET['id']);
+    // $ComplexData = $offreController->getOffresById($recruteurId);
+}
 
 ?>
 
@@ -92,6 +100,22 @@ $ComplexData = $offreController->getOffres();
                 </div>
             </div>
         </div>
+
+        <!-- create secces message -->
+    <?php if (isset($_SESSION['success']['message'])): ?>
+        <span
+            class="message bg-green-100 text-green-700 px-4 py-2 rounded-md flex items-center gap-2 font-medium shadow-sm border border-red-200 absolute top-4 left-1/2 transform -translate-x-1/2 z-50">
+            <!-- Optional: Add an error icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-700" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                    clip-rule="evenodd" />
+            </svg>
+            <p><?php echo $_SESSION['success']['message']; ?></p>
+            <?php unset($_SESSION['success']['message']); ?>
+        </span>
+    <?php endif; ?>
+
 
         <!-- Job Listings -->
         <div class="bg-white rounded-lg shadow p-4 mb-4">
@@ -187,15 +211,18 @@ $ComplexData = $offreController->getOffres();
                                     <span
                                         class="inline-flex items-center px-3 py-1 mt-2 rounded-full text-sm font-medium bg-green-50 text-green-700">
                                         <span class="w-2 h-2 rounded-full bg-green-500 mr-2"></span>
-                                        <?php echo $offre['category_name'] ;?>
+                                        <?php echo $offre['category_name']; ?>
                                     </span>
                                 </div>
+
                                 <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                     <button class="p-1 text-gray-400 hover:text-blue-600 rounded-full hover:bg-blue-50">
-                                        <a href="dashboard.php?id_modifier=<?php echo $offre['id'] ;?>"><i class="fas fa-edit"></i></a>
+                                        <a href="updateOffre.php?id=<?php echo $offre['id']; ?>"><i
+                                                class="fas fa-edit"></i></a>
                                     </button>
                                     <button class="p-1 text-gray-400 hover:text-red-600 rounded-full hover:bg-red-50">
-                                    <a href="dashboard.php?id_supprimer=<?php echo $offre['id'] ;?>"><i class="fas fa-trash"></i></a>
+                                        <a href="dashboard.php?id=<?php echo $offre['id']; ?>"><i
+                                                class="fas fa-trash"></i></a>
                                     </button>
                                 </div>
                             </div>
@@ -203,13 +230,13 @@ $ComplexData = $offreController->getOffres();
                             <div class="flex flex-wrap gap-2 mb-4">
                                 <?php foreach ($tags as $tag): ?>
                                     <span
-                                        class="px-2 py-1 text-xs font-medium bg-gray-50 text-gray-600 rounded-md">#<?php echo $tag ;?>
+                                        class="px-2 py-1 text-xs font-medium bg-gray-50 text-gray-600 rounded-md">#<?php echo $tag; ?>
                                     </span>
                                 <?php endforeach; ?>
                             </div>
 
                             <p class="text-sm text-gray-600 mb-4 line-clamp-2">
-                                <?php echo $offre['description'] ;?>
+                                <?php echo $offre['description']; ?>
                             </p>
 
 
@@ -220,7 +247,7 @@ $ComplexData = $offreController->getOffres();
                                 </div>
                                 <div class="flex items-center text-gray-600">
                                     <!-- <i class="fas fa-euro-sign w-4 text-green-500"></i> -->
-                                    <span class="ml-2"><?php echo $offre['salary'] ;?>DH</span>
+                                    <span class="ml-2"><?php echo $offre['salary']; ?>DH</span>
                                 </div>
                                 <div class="flex items-center text-gray-600 col-span-2">
                                     <i class="fas fa-graduation-cap w-4 text-purple-500"></i>
@@ -233,6 +260,16 @@ $ComplexData = $offreController->getOffres();
             </div>
         </div>
     </div>
+
+    <script>
+        const message = document.querySelector('.message');
+        if (message) {
+            setTimeout(() => {
+                message.remove();
+            }, 3000);
+        }
+
+    </script>
 </body>
 
 </html>

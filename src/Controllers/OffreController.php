@@ -42,38 +42,50 @@ class OffreController
         return $offres;
     }
 
-    // public function getOffre($id)
-    // {
-    //     $offre = $this->offreModel->getOffreById($id);
-    //     return $offre;
-    // }
+    public function getOffresById($recruteurId)
+    {
+        $offres = $this->offreModel->getAllOffresByRecruteurId($recruteurId);
+        return $offres;
+    }
 
-    // public function updateOffre($id, $post, $description, $salary, $qualification, $location, $recruiter_id, $category_id)
-    // {
-    //     $offre = new Offre($id, $post, $description, $salary, $qualification, $location, $recruiter_id, $category_id);
-    //     $result = $this->offreModel->updateOffre($offre);
-    //     if ($result) {
-    //         header("Location: ../../View/offre/index.php");
-    //         exit();
-    //     } else {
-    //         $_SESSION['error']['message'] = 'Invalid email or password';
-    //         header("Location: ../../View/offre/edit.php");
-    //         exit();
-    //     }
-    // }
+    public function getOffreById($offreId)
+    {
+        $offre = $this->offreModel->getOffreById($offreId);
+        return $offre;
+    }
 
-    // public function deleteOffre($id)
-    // {
-    //     $result = $this->offreModel->deleteOffre($id);
-    //     if ($result) {
-    //         header("Location: ../../View/offre/index.php");
-    //         exit();
-    //     } else {
-    //         $_SESSION['error']['message'] = 'Invalid email or password';
-    //         header("Location: ../../View/offre/index.php");
-    //         exit();
-    //     }
-    // }
+
+    public function updateOffre($offre, $tags_ids)
+    {
+        $resultUpdateOffre = $this->offreModel->updateOffreFromDatabase($offre);
+        if ($resultUpdateOffre) {
+            $offre_id = $offre->getId();
+            $resultUpdateTags = $this->offreModel->updateOffreTags($tags_ids, $offre_id);
+        }
+        if ($resultUpdateTags) {
+            $_SESSION['success']['message'] = 'Updated Offre seccesfully';
+            header("Location: ../../View/recruteur/dashboard.php");
+            exit();
+        } else {
+            $_SESSION['error']['message'] = 'Invalid inputs';
+            header("Location: ../../View/recruteur/updateOffre.php");
+            exit();
+        }
+    }
+
+    public function deleteOffre($id)
+    {
+        $result = $this->offreModel->deleteOffreFromDatabase($id);
+        if ($result) {
+            $_SESSION['success']['message'] = 'Delete Offre seccesfully';
+            header("Location: ../../View/recruteur/dashboard.php");
+            exit();
+        } else {
+            $_SESSION['error']['message'] = 'Somthing wrong';
+            header("Location: ../../View/recruteur/dashboard.php");
+            exit();
+        }
+    }
 
 }
 ?>

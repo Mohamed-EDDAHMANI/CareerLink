@@ -89,7 +89,6 @@ class Auth
     {
         $user = $result['user'];
         $lastInsertId = $result['id'];
-        echo $lastInsertId;
         $_SESSION['user'] = [
             'name' => $user->getName(),
             'email' => $user->getEmail(),

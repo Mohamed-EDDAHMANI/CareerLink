@@ -20,6 +20,12 @@ $offerControllerInstens = new OffreController();
 $tags = $tagInstens->getTags();
 $categoris = $catigorieInstens->getCatigories();
 
+if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+    if (isset($_GET['id'])) {
+        $id = $_GET['id'];
+    }
+    $offre = $offerControllerInstens->getOffreById($id);
+}
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
     if (isset($_POST['tags']) && is_array($_POST['tags'])) {
@@ -27,6 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     
     // Récupérer les données du formulaire
+    $id = $_POST['id'];
     $post = $_POST['post'];
     $description = $_POST['description'];
     $salary = $_POST['salary'];
@@ -35,15 +42,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $category_id = $_POST['categorie_id'];
     $recruiter_id = $_SESSION['user']['id'];
     if($recruiter_id){
-        $offreInstens = new Offre('', $post, $description, $salary, $qualification, $location, $recruiter_id, $category_id);
-        $offerControllerInstens->createOffre($offreInstens, $selectedTags);
+        $offreInstens = new Offre($id, $post, $description, $salary, $qualification, $location, $recruiter_id, $category_id);
+        $offerControllerInstens->updateOffre($offreInstens, $selectedTags);
     }else{
-        $_SESSION['error']['message'] = 'Invalid Offre informations';
+        $_SESSION['error']['message'] = '404 not found';
         exit();
     }
 
 }
-
 
 
 ?>
@@ -70,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <a href="dashboard.php" class="text-gray-600 hover:text-gray-800">
                         <i class="fas fa-arrow-left text-xl"></i>
                     </a>
-                    <span class="ml-4 text-xl font-semibold">Créer une nouvelle offre</span>
+                    <span class="ml-4 text-xl font-semibold">Modifier l'offre</span>
                 </div>
             </div>
         </div>
@@ -113,13 +119,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div class="bg-white rounded-lg shadow p-6">
                 <h2 class="text-lg font-semibold mb-4">Informations de base</h2>
                 <div class="space-y-4">
+                    <input type="number" name="id" value="<?php echo $offre['id']; ?>" hidden>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">
                             Intitulé du poste *
                         </label>
                         <input name="post" type="text" required
                             class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                            placeholder="ex: Développeur Full Stack">
+                            placeholder="ex: Développeur Full Stack" value="<?php echo $offre['post']; ?>">
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
@@ -127,9 +134,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 Catégorie *
                             </label>
                             <select required
-                                class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" name="categorie_id">
+                                class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                name="categorie_id">
                                 <option value="">Sélectionnez une catégorie</option>
-                                <?php if ($categoris): ?>
+                                <option selected value="<?php echo $offre['categoryId']; ?>">
+                                    <?php echo $offre['category_name']; ?>
+                                </option>
+                                <?php if ($offre): ?>
                                     <?php foreach ($categoris as $categori): ?>
                                         <?php echo '<option value="' . $categori['id'] . '">' . $categori['category_name'] . '</option>'; ?>
                                     <?php endforeach; ?>
@@ -142,9 +153,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             </label>
                             <select required
                                 class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                <option value="">Sélectionnez un type</option>
+                                <!-- <option value="">Sélectionnez un type</option> -->
                                 <option value="CDI">CDI</option>
-                                <option value="CDD">CDD</option>
+                                <option value="CDD" selected>CDD</option>
                                 <option value="Intérim">Intérim</option>
                                 <option value="internship">Stage</option>
                                 <option value="apprenticeship">Alternance</option>
@@ -163,9 +174,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <label class="block text-sm font-medium text-gray-700 mb-1">
                                 Ville *
                             </label>
-                            <input type="text" name="location" required
-                                class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                placeholder="ex: Paris">
+                            <input type="text" name="location" required value="<?php echo $offre['location']; ?>"
+                                class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                         </div>
 
                     </div>
@@ -175,7 +185,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 Salaire *
                             </label>
                             <div class="relative">
-                                <input type="number" name="salary" required
+                                <input type="number" name="salary" required value="<?php echo $offre['salary']; ?>"
                                     class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 pl-8"
                                     placeholder="ex: 35000">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -199,6 +209,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <select required name="qualification"
                                 class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                                 <option value="">Sélectionnez un niveau</option>
+                                <option value="" selected><?php echo $offre['qualification']; ?></option>
                                 <option value="Bac">Bac</option>
                                 <option value="Bac+2 - DUT/BTS">Bac+2 - DUT/BTS</option>
                                 <option value="Bac+3 - Licence">Bac+3 - Licence</option>
@@ -213,15 +224,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         </label>
                         <div class="mb-6">
                             <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                                <?php if ($tags): ?>
-                                    <?php foreach ($tags as $tag): ?>
-                                        <label class="flex items-center space-x-2">
-                                            <?php echo '<input type="checkbox" name="tags[]" value=' . $tag['id'] . ' 
-                                                class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"> '; ?>
-                                            <?php echo '<span class="text-sm text-gray-700"># ' . $tag['tag_name'] . '</span>'; ?>
-                                        </label>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
+                                <?php $tagsCheked = explode(',', $offre['tags']); ?>
+                                <?php
+                                if ($tags) {
+                                    foreach ($tags as $tag) {
+                                        echo '<label class="flex items-center space-x-2">';
+                                        $isChecked = false;
+
+                                        foreach ($tagsCheked as $tagChecked) {
+                                            if ($tag['tag_name'] === $tagChecked) {
+                                                $isChecked = true;
+                                            }
+                                        }
+                                        if ($isChecked) {
+                                            echo '<input type="checkbox" checked name="tags[]" value=' . $tag['id'] . ' 
+                                                class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"> ';
+                                            echo '<span class="text-sm text-gray-700"># ' . $tag['tag_name'] . '</span>';
+                                        } else {
+                                            echo '<input type="checkbox" name="tags[]" value=' . $tag['id'] . ' 
+                                                class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"> ';
+                                            echo '<span class="text-sm text-gray-700"># ' . $tag['tag_name'] . '</span>';
+
+                                        }
+                                        echo '</label>';
+                                    }
+                                } ?>
                             </div>
                         </div>
                     </div>
@@ -238,7 +265,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         </label>
                         <textarea required rows="6" name="description"
                             class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                            placeholder="Décrivez les responsabilités, missions et attentes du poste..."></textarea>
+                            placeholder="Décrivez les responsabilités, missions et attentes du poste..."><?php echo $offre['description']; ?></textarea>
                     </div>
                 </div>
             </div>
@@ -251,7 +278,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </button>
                 <button type="submit"
                     class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                    Publier l'offre
+                    Modifier l'offre
                 </button>
             </div>
         </form>
